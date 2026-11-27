@@ -15,6 +15,8 @@ gh issue view N --json number,title,state,author,labels,subIssues
 
 Run the entry check, remove the `agent` label if present, and link the thread to the issue (see the rules); each stage skill sets the thread title.
 
+Another thread on N: T3 `t3_thread_list` with `titleContains: "#N "` (trailing space) and `settled: false`. One besides this one: name it (its link) and ask **go on here** / **stop**.
+
 Route by stage label:
 
 | Stage | Run |
