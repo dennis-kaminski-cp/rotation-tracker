@@ -12,7 +12,7 @@ The build already enforces style, sealed classes, layering, slice isolation, `@c
 ## 1. Read
 
 - The diff: `gh pr diff <n>` or `git diff origin/main...HEAD`. Then the full files it touches, not just the hunks.
-- The issue the PR closes (`Closes #N`): the spec (Scope, Scenarios, Decisions) and `## Design`. A sub-issue: the parent's Decisions too. No issue: review against `CLAUDE.md` only and say so.
+- The issue the PR closes (`gh pr view <n> --json closingIssuesReferences,headRefName`): the spec (Scope, Scenarios, Decisions) and `## Design`. A sub-issue: the parent's Decisions too. None listed but the branch is `<type>/N-…`: review against issue N and report the missing `Closes #N` as HIGH. No issue at all: review against `CLAUDE.md` only and say so.
 - `CLAUDE.md` and `CONTEXT.md`.
 - **The baseline**: for each kind of code the PR adds (aggregate, value object, handler, page, step file, migration, test), open the closest existing example on `origin/main`. The patterns are whatever the existing code does, not what this file says; this file only says where to look.
 

@@ -15,7 +15,10 @@ gh issue view N --json number,title,state,author,labels,subIssues
 
 Run the entry check, remove the `agent` label if present, and link the thread to the issue (see the rules); each stage skill sets the thread title.
 
-Another thread on N: T3 `t3_thread_list` with `titleContains: "#N "` (trailing space) and `settled: false`. One besides this one: name it (its link) and ask **go on here** / **stop**.
+Another thread on N: T3 `t3_thread_list` with `titleContains: "#N "` (trailing space) and `settled: false`.
+
+- A `[build]` thread: it owns N's worktree and branch, so a second build here would collide. Send it the work (`t3_thread_send`, mode `queue`): `Continue the build-issue skill for issue #N; the owner asked again, so work any new review comments.` Tell the owner its link and stop.
+- Any other one besides this one: name it (its link) and ask **go on here** / **stop**.
 
 Route by stage label:
 

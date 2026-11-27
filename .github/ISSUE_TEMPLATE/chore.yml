@@ -1,0 +1,10 @@
+name: Chore
+description: Maintenance, tooling, docs. Nothing a user sees changes.
+labels: [chore, "stage:inbox"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What and why
+    validations:
+      required: true
