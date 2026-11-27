@@ -7,7 +7,7 @@ description: Review a pull request or branch against this repo: correctness, spe
 
 Input: a PR number, or a branch (base `origin/main`). Read-only: no edits, no commits, no GitHub writes. The output is the findings list.
 
-The build already enforces style, sealed classes, layering, slice isolation, `@code` in `.razor` and banned APIs (`.editorconfig`, `Directory.Build.props`, `BannedSymbols.txt`, `ArchitectureTests.cs`). Don't report what CI catches; spend the review on what needs judgement.
+The build already enforces style, sealed classes, layering, slice isolation, `@code` in `.razor`, banned APIs and complexity limits (`.editorconfig`, `Directory.Build.props`, `BannedSymbols.txt`, `CodeMetricsConfig.txt`, `ArchitectureTests.cs`). Don't report what CI catches; spend the review on what needs judgement.
 
 ## 1. Read
 
