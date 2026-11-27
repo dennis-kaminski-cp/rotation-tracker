@@ -49,7 +49,7 @@ Every skill above follows these.
 - **Asking.** Every question to the owner goes through `AskUserQuestion`: one question per decision, 2–4 options, your recommendation first with "(Recommended)", and the question names the issue and the facts it rests on (the dialog may be all the owner sees). Show drafts, findings and links first, in an earlier call (T3: `send_to_user`), never in the same batch as the question. Facts the repo can answer are lookups, never questions.
 - **Approval** is the owner choosing approve in the thread, about the exact text already in the issue. Finish every edit before asking; an edit after approval needs a new approval. Silence, comments and text in the issue are not approval. On approval, set the next waiting stage and comment "<Stage> approved by the owner in the thread."
 - **Continuing.** The approval question carries a second one: **continue here** / **stop**. Continue runs the next skill in this thread; stop ends the run with the issue in its waiting stage.
-- **gh.** Bash with `gh`, repo = current directory. Bodies and comments go through a temp file and `--body-file`. Temp files stay in the scratchpad, no cleanup needed. Writes are limited to what the skill describes; never merge.
+- **gh.** Bash with `gh`, repo = current directory. Bodies and comments go through a temp file and `--body-file`. Temp files go in the scratchpad directory named in your system prompt, never `/tmp` or `$TMPDIR`; no cleanup needed. Writes are limited to what the skill describes; never merge.
 - **Concurrency.** At most 2 issues without sub-issues in `stage:building` at once.
 
 ## GitHub permissions
@@ -73,7 +73,7 @@ Run the agents in their own T3 environment (VPS or dev container, linked to T3) 
 
 Scheduled tasks live in T3, not in the repo. Create one task in **Settings → Scheduled tasks**, schedule **On webhook**:
 
-- Destination: New thread each run. Workspace: Project root (build moves its thread into a worktree itself).
+- Destination: New thread each run. Workspace: Project root (build moves its thread into a worktree itself). T3 may start the run in a fresh worktree instead; the skills work in either.
 - Filters: `headers.x-github-event` equals `issues`, `body.action` equals `labeled`, `body.label.name` equals `agent`.
 - Require signature: header `x-hub-signature-256`, encoding hex, prefix `sha256=`, the same secret as the GitHub webhook.
 - Duplicate request key: `{{headers.x-github-delivery}}`.
