@@ -29,28 +29,18 @@ The repo is built mostly by AI agents. The owner decides, the agents do the work
 ### Workflow
 
 ```mermaid
-flowchart TD
-    issue["Issue"] -->|"owner hands it to an agent"| refine["Refine: what to build"]
-    refine --> ok1{"Owner approves?"}
-    ok1 -->|"changes"| refine
-    ok1 -->|"too big: split into sub-issues"| refine
-    ok1 -->|"design needed"| design["Design: how to build it"]
-    ok1 -->|"small fix"| build
-    design --> ok2{"Owner approves?"}
-    ok2 -->|"changes"| design
-    ok2 -->|"yes"| build
-
-    subgraph buildbox ["Build, isolated per issue"]
-        build["Tests first, then code"] --> gates["Automated checks"]
-        gates --> review["Independent AI review"]
-        review -->|"serious findings"| build
-    end
-
-    review -->|"clean"| pr["Pull request"]
-    pr --> human["Owner tries it out and reviews"]
-    human -->|"comments"| build
-    human -->|"approve"| merge["Owner merges"]
+flowchart LR
+    issue["Issue"] --> refine["Refine"]
+    refine --> design["Design"]
+    design --> build["Build"]
+    build --> review["AI review"]
+    review -->|"findings"| build
+    review --> pr["Pull request"]
+    pr --> merge["Owner merges"]
+    pr -->|"comments"| build
 ```
+
+The owner approves the spec after refine and the design before build; small fixes skip design, big items are split into sub-issues.
 
 ### Pillars
 
