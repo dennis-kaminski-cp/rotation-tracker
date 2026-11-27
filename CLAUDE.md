@@ -48,6 +48,10 @@ Migrations run on app startup.
 3. Build the slice (handler + page) until the scenarios pass (green).
 4. Refactor, run `dotnet test`. Done means the whole suite passes.
 
+## Git flow
+
+`main` is protected: work on a branch, open a PR, and merge (squash) only when the `build-and-test` CI check (`.github/workflows/ci.yml`) is green.
+
 ## Worktrees and parallel runs
 
 - E2E runs are fully isolated: each run starts its own Postgres container and hosts the app on a random port. Several worktrees can run `dotnet test` at the same time.
