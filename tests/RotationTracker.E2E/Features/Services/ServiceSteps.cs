@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using Reqnroll;
 using static Microsoft.Playwright.Assertions;
@@ -24,6 +25,10 @@ public sealed class ServiceSteps(IPage page)
     [When("I create a service named {string} with a {int}-character description in project {string}")]
     public Task CreateServiceWithLongDescription(string name, int length, string project) =>
         Create(name, new string('x', length), project);
+
+    [When("I open the new service page for an unknown project")]
+    public Task OpenNewServicePageForUnknownProject() =>
+        page.GotoAsync($"projects/{Guid.NewGuid()}/services/new");
 
     private async Task Create(string name, string? description, string project)
     {
@@ -55,5 +60,5 @@ public sealed class ServiceSteps(IPage page)
         page.GetByRole(AriaRole.Region, new() { Name = name, Exact = true });
 
     private ILocator Service(string project, string name) =>
-        Project(project).GetByRole(AriaRole.Listitem).Filter(new() { HasText = name });
+        Project(project).GetByRole(AriaRole.Listitem).Filter(new() { HasTextRegex = new Regex($"^{Regex.Escape(name)}( —|$)") });
 }

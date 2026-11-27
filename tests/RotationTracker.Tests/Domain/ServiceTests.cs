@@ -31,6 +31,15 @@ public sealed class ServiceTests
         Assert.Throws<ArgumentException>(() => Service.Create(ProjectId, new string('x', Service.NameMaxLength + 1), null));
     }
 
+    [Fact]
+    public void Create_AcceptsNameAndDescriptionAtMax()
+    {
+        var service = Service.Create(ProjectId, new string('x', Service.NameMaxLength), new string('y', Service.DescriptionMaxLength));
+
+        Assert.Equal(Service.NameMaxLength, service.Name.Length);
+        Assert.Equal(Service.DescriptionMaxLength, service.Description!.Length);
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]

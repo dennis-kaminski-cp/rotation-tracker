@@ -31,5 +31,9 @@ Feature: Create service
     When I create a service named "Checkout API" with a 501-character description in project "Payments"
     Then I see an error that the description is too long
 
+  Scenario: Creating a service in an unknown project
+    When I open the new service page for an unknown project
+    Then I see the error "Project not found."
+
   Scenario: A new project has no services
     Then project "Payments" lists no services
