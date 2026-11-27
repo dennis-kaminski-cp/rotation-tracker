@@ -33,13 +33,19 @@ inbox ──agent:refine──▶ refining ──human──▶ ready ──agen
 
 ## GitHub permissions
 
-- `.claude/settings.json` allows the issue/PR writes the skills need and denies merge, repo settings, rulesets and deletes.
-- Agents use a fine-grained token limited to this repo, set per machine in the git-ignored `.claude/settings.local.json`:
-  ```json
-  { "env": { "GH_TOKEN": "github_pat_..." } }
-  ```
-  Token scope: repository `rotation-tracker` only; Issues, Pull requests, Contents read/write; nothing else.
+Agents run on the developer's machine with the developer's own `gh` login. There is no per-agent permission layer: a deny list in `.claude/settings.json` is easy to bypass, and a limited token adds nothing while the full login is reachable via `gh auth token`. The guard rails are:
+
+- Skills only make the writes they describe (labels, comments, issue body, sub-issues, draft PRs) and never merge.
+- `main` is protected: PR only, green CI, squash merge by a human.
 - Interactive sessions still ask before any GitHub write.
+
+### Real isolation (later)
+
+Run the agents in their own T3 environment (VPS or dev container, linked to T3) with no personal login on it. Give that environment a fine-grained token as `GH_TOKEN` via **Settings → Secrets** (provider env vars, per environment; a 1Password `op://` reference works):
+
+- Repository access: `rotation-tracker` only.
+- Contents, Issues, Pull requests: read and write. Everything else no access (no Workflows, so agents can't change CI; no Administration).
+- Expiration 30–90 days.
 
 ## T3 setup (manual, per machine)
 

@@ -484,6 +484,3 @@ $RECYCLE.BIN/
 
 # Reqnroll generated code
 *.feature.cs
-
-# Per-machine Claude settings (holds GH_TOKEN)
-.claude/settings.local.json
