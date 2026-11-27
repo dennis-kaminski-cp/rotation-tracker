@@ -33,9 +33,10 @@ flowchart LR
     issue["Issue"] --> refine["Refine"]
     refine --> design["Design"]
     design --> build["Build"]
-    build --> review["AI review"]
+    build --> draft["Draft PR"]
+    draft --> review["AI review"]
     review -->|"findings"| build
-    review --> pr["Pull request"]
+    review --> pr["Ready PR"]
     pr --> merge["Owner merges"]
     pr -->|"comments"| build
 ```
