@@ -34,6 +34,6 @@ app.MapHealthChecks("/healthz");
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();
 
 public partial class Program;
