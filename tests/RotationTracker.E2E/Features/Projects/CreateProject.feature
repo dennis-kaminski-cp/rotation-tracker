@@ -1,5 +1,5 @@
 Feature: Create project
-  A project groups one or more services.
+  A project groups zero or more services.
 
   Scenario: Create a project
     When I create a project named "Payments"

@@ -5,7 +5,7 @@ Tracks when credentials used by services must be rotated and where they must be 
 ## Language
 
 **Project**:
-A group of one or more services.
+A group of zero or more services.
 _Avoid_: Product, solution
 
 **Service**:
