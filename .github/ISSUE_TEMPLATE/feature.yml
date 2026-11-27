@@ -1,0 +1,22 @@
+name: Feature spec
+description: A worked-out feature. Refinement still checks it and may split it.
+labels: [feature, "stage:inbox"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should a user be able to do, and why?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: In scope / out of scope.
+  - type: textarea
+    id: scenarios
+    attributes:
+      label: Scenarios
+      description: Gherkin, in the terms of CONTEXT.md.
+      render: gherkin

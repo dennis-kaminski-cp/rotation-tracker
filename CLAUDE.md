@@ -52,6 +52,8 @@ Migrations run on app startup.
 
 `main` is protected: work on a branch, open a PR, and merge (squash) only when the `build-and-test` CI check (`.github/workflows/ci.yml`) is green.
 
+Work items are GitHub issues; labels, stages and the agent triggers are in `docs/agent-workflow.md`.
+
 ## Worktrees and parallel runs
 
 - E2E runs are fully isolated: each run starts its own Postgres container and hosts the app on a random port. Several worktrees can run `dotnet test` at the same time.
