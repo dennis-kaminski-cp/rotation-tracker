@@ -44,6 +44,10 @@ public sealed class CreateProjectHandler(IDbContextFactory<AppDbContext> dbFacto
     // The check above misses a concurrent create of the same name; the unique index catches it.
     private static bool IsUniqueViolation(DbUpdateException ex)
     {
-        return ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation };
+        return ex.InnerException is PostgresException
+        {
+            SqlState: PostgresErrorCodes.UniqueViolation,
+            ConstraintName: "IX_Projects_Name",
+        };
     }
 }

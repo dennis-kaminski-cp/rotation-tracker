@@ -17,8 +17,8 @@ Run the entry check and remove the `agent` label if present (see the rules).
 
 Other threads on N: T3 `t3_thread_list` with `titleContains: "#N "` (trailing space) and `settled: false`; for a sub-issue also `"#P "` for its parent P (an orchestrate thread may be working on N). Leave this thread out.
 
-- A `[build]` thread while N has an open PR (`gh pr list --state open`, branch `<type>/N-…`): it owns that branch and worktree, so a second build here would collide. Send it the work (`t3_thread_send`, mode `queue`): `Continue the build-issue skill for issue #N; the owner asked again, so work any new review comments.` Tell the owner its link and stop, without linking this thread.
-- Any other: name it (its link) and ask **go on here** / **stop**. A build thread without an open PR is abandoned; the owner can settle it.
+- A `[build]` thread, N in `stage:building` or `stage:review`, and either N has an open PR (`gh pr list --state open`, branch `<type>/N-…`) or the thread is `running` or `waiting` (a build before its first push has no PR yet): that build owns N's branch and worktree, so a second build here would collide. Send it the work (`t3_thread_send`, mode `queue`): `Continue the build-issue skill for issue #N; the owner asked again, so work any new review comments.` Tell the owner its link and stop, without linking this thread.
+- Any other: name it (its link) and ask **go on here** / **stop**. A stopped build thread with no open PR is abandoned; the owner can settle it.
 
 Going on: link this thread to the issue (see the rules); each stage skill sets the thread title.
 

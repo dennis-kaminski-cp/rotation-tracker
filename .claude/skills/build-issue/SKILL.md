@@ -14,22 +14,21 @@ Read `docs/agent-workflow.md` first: its **Rules for agent runs** apply througho
 ## 1. Read and check
 
 ```sh
-gh issue view N --json number,title,body,state,author,labels,comments,subIssues,parent,blockedBy,closedByPullRequestsReferences
+gh issue view N --json number,title,body,state,author,labels,comments,subIssues,parent,blockedBy
 gh pr list --state open --json number,headRefName,isDraft,url --jq '[.[] | select(.headRefName | test("^[a-z]+/N-"))]'
 ```
 
-N's PRs are its open PRs on a `<type>/N-…` branch (section 2) plus `closedByPullRequestsReferences`. A PR closed unmerged is an abandoned build: ignore it. Never search PR bodies for N: that matches every PR that mentions the number.
+N's branch is any branch matching `^[a-z]+/N-` (section 2 names it). N's PR is the open PR on it. A merged PR closed N already (entry check); one closed unmerged is an abandoned build: ignore it. Never search PR bodies for N: that matches every PR that mentions the number.
 
 Entry stages: waiting `stage:ready` (no sub-issues; a parent goes to `orchestrate-issue`), in progress `stage:building`, waiting `stage:review`. Run the entry check. A sub-issue: read the parent too; its Decisions are part of the spec.
 
 Ask (**go on** / **stop**, naming what holds) when:
 
 - an issue it is blocked by is still open;
-- a PR in `closedByPullRequestsReferences` is already merged;
 - it is a sub-issue, a sibling before it in the parent's order is still open, and no parent thread started you;
 - two or more other issues are already in `stage:building` (`gh issue list --label stage:building --json number`).
 
-**Resume** when an open PR for N exists: its branch is the build. Any PR on another branch than the one you would resume: show it and ask. No open PR: a new build, whatever the stage.
+**Resume** when an open PR for N exists: its branch is the build. No open PR: a new build, whatever the stage.
 
 Claim to `stage:building` (a resume of a PR in review too), title the thread `[build]: #N <title>`.
 
@@ -37,7 +36,7 @@ Claim to `stage:building` (a resume of a PR in review too), title the thread `[b
 
 Builds never happen in the project root. Check `t3_worktree_status`:
 
-- In a worktree on this issue's branch (a thread the parent launched, or after a handoff): new build → `git fetch origin`, `git status` clean and `git log origin/main..HEAD` empty, otherwise stop and say the build needs a fresh worktree. Go to 3.
+- In a worktree on N's branch (`^[a-z]+/N-`; a thread the parent launched, or after a handoff): new build → `git fetch origin`, `git status` clean and `git log origin/main..HEAD` empty, otherwise stop and say the build needs a fresh worktree. Go to 3.
 - In any other worktree: the handoff can't move a thread that already has one. Say the run has to start from the project root, and stop.
 - In the project root: move the thread, as the **last call of the turn** (the move ends this session), `continuationPrompt` `Continue the build-issue skill for issue #N.`:
   - New build: `t3_worktree_handoff`, `branch` `<type>/N-<slug>` (`feat` for feature, `fix` for bug, `chore` for chore; slug ≤ 5 words from the title), `baseRef` `origin/main`, `startFromOrigin` true.

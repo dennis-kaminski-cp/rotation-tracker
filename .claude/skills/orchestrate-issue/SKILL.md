@@ -13,11 +13,11 @@ Read `docs/agent-workflow.md` first: its **Rules for agent runs** apply througho
 
 ```sh
 gh issue view N --json number,title,body,state,author,labels,subIssues
-gh issue view <M> --json number,title,state,labels,blockedBy,closedByPullRequestsReferences      # each sub-issue
+gh issue view <M> --json number,title,state,labels,blockedBy      # each sub-issue
 gh pr list --state open --json number,headRefName,isDraft,url
 ```
 
-A sub-issue M's PRs are its open PRs on a `<type>/M-…` branch plus `closedByPullRequestsReferences`, as in `build-issue` section 1; closed unmerged ones are abandoned and ignored.
+A sub-issue M's PR is the open PR on a `<type>/M-…` branch, as in `build-issue` section 1; closed unmerged ones are abandoned and ignored.
 
 Entry stage: `stage:ready` with sub-issues. The parent keeps `stage:ready` while it is worked; there is no claim beyond removing `agent`. Run the entry check, title the thread `[orchestrate]: #N <title>`. The title stays, and only N is linked to this thread, never a sub-issue or a PR: a linked PR settles the thread when it merges.
 
@@ -36,7 +36,7 @@ Take the first open sub-issue M in order that can move, and act by its stage:
 | `stage:inbox`, `stage:refining` | run `refine-issue` for M here |
 | `stage:refined`, `stage:designing` | run `design-issue` for M here, once every blocker of M has a PR (its design builds on theirs) |
 | `stage:ready` | start its build (section 4), once every blocker is closed (merged) and fewer than 2 builds run |
-| `stage:building`, `stage:review` | nothing while its build thread works on it; an open PR with no build thread of this run goes to section 5; no open PR and no build at work (abandoned): ask **rebuild** (section 4) / **stop** |
+| `stage:building`, `stage:review` | nothing while its build thread works on it; an open PR with no build thread of this run goes to section 5; no open PR and no `[build]: #M` thread `running` or `waiting` (`t3_thread_list`, `titleContains: "#M "`; abandoned): ask **rebuild** (section 4) / **stop** |
 
 Several can move: refine and design the next ones while builds run. Nothing can move: say what the group waits on (a build, a merge, the owner) and end the turn.
 
