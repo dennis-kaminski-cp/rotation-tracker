@@ -50,7 +50,7 @@ public sealed class TestRun
     }
 
     [BeforeScenario]
-    public async Task StartScenarioAsync(IObjectContainer container)
+    public static async Task StartScenarioAsync(IObjectContainer container)
     {
         await ResetDatabaseAsync();
         var context = await browser.NewContextAsync(new() { BaseURL = app.ClientOptions.BaseAddress.ToString() });
@@ -59,7 +59,7 @@ public sealed class TestRun
     }
 
     [AfterScenario]
-    public Task StopScenarioAsync(IBrowserContext context) => context.CloseAsync();
+    public static Task StopScenarioAsync(IBrowserContext context) => context.CloseAsync();
 
     private static async Task ResetDatabaseAsync()
     {
