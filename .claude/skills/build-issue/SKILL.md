@@ -78,7 +78,7 @@ Outside the task, not touched: at most 3 by impact, each with a proposed issue o
 
 After `dotnet test` is green and everything is pushed, start a fresh-context reviewer: Agent tool, `subagent_type` `general-purpose`, `model` `opus`, `effort` `high`, foreground (pinned here on purpose: it overrides any model-by-task default, and works from any thread model). Give it only this prompt, so it is not steered by your reasoning:
 
-> Review PR <url> in the worktree at `<path>`. First run the `code-review` skill at `high` on PR <number>. Then check the PR against its spec and design (issue #N) and `CLAUDE.md`: the metadata-only rule, the repo's patterns, every scenario and every invariant of the design tested. Report each finding with severity CRITICAL, HIGH, MEDIUM or LOW (a `code-review` important finding is at least HIGH, a nit is LOW, a pre-existing one goes under Noticed), file:line, and the fix in a line. Return all findings verbatim.
+> Review PR <url> in the worktree at `<path>` with the `review-pr` skill. Return all findings verbatim.
 
 By severity:
 

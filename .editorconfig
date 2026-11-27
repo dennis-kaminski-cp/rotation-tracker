@@ -114,6 +114,15 @@ dotnet_diagnostic.IDE0049.severity = warning   # string, not String
 dotnet_diagnostic.CA1849.severity = warning    # no sync-over-async
 dotnet_diagnostic.CA2016.severity = warning    # pass the CancellationToken on
 
+# Complexity: limits in CodeMetricsConfig.txt
+dotnet_diagnostic.CA1502.severity = warning    # cyclomatic complexity
+dotnet_diagnostic.CA1505.severity = warning    # maintainability index
+dotnet_diagnostic.CA1506.severity = warning    # class coupling
+dotnet_diagnostic.S3776.severity = warning     # cognitive complexity (15)
+dotnet_diagnostic.S134.severity = warning      # nesting depth (3)
+dotnet_diagnostic.S138.severity = warning      # method length (80 lines)
+dotnet_diagnostic.S107.severity = warning      # parameters (7)
+
 # readonly fields
 dotnet_style_readonly_field = true
 dotnet_diagnostic.IDE0044.severity = warning
@@ -186,3 +195,8 @@ dotnet_style_parentheses_in_other_operators = never_if_unnecessary:silent
 # Tests: Method_Behaviour names use underscores.
 [tests/**.cs]
 dotnet_diagnostic.CA1707.severity = none
+
+# Composition root: wiring every service is its job. Program is partial and non-static for WebApplicationFactory<Program>.
+[src/RotationTracker/Program.cs]
+dotnet_diagnostic.CA1506.severity = none
+dotnet_diagnostic.S1118.severity = none
