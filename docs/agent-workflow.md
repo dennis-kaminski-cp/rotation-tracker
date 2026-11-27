@@ -34,7 +34,7 @@ in progress:  refining ─approve─▶ designing ─approve─▶ building ─�
 - **Design** settles *how*: domain model, data, slices, UI, tests. A conversation with the owner.
 - **Build** implements the approved spec and design; a deviation is stated in the PR. It moves the thread into a fresh worktree from `origin/main` first. Inner review loop (max 2 rounds, until no HIGH findings and `dotnet test` is green).
 - **Parent issues**: approving a split puts the parent in `ready`; `orchestrate-issue` then takes the sub-issues one by one in build order: refine and design happen in the parent's thread (just in time, since what the earlier ones become changes the later ones), builds start as separate worktree threads so they can run in parallel.
-- **Review**: human checks with `/preview` and merges (squash, CI green).
+- **Review**: human checks with `/preview` and merges (squash, CI green). Review comments on the PR: add `agent` to the issue (or ask in the thread); `build-issue` works them on the same branch.
 
 Refine and design make **no code changes**: no branch, no files, everything goes into the issue.
 
