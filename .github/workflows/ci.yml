@@ -22,4 +22,8 @@ jobs:
       - run: dotnet format --verify-no-changes --no-restore
       - run: pwsh tests/RotationTracker.E2E/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
       - run: dotnet test -c Release --no-build
-      - run: docker build .
+      - name: Container smoke test
+        run: |
+          docker compose up -d --build --wait
+          curl -fsS --retry 30 --retry-delay 1 --retry-all-errors http://localhost:8080/healthz
+          curl -fsS -o /dev/null http://localhost:8080/_framework/blazor.web.js
