@@ -17,9 +17,14 @@ public sealed class Project
     {
         var trimmed = name?.Trim();
         if (string.IsNullOrEmpty(trimmed))
+        {
             throw new ArgumentException("Project name is required.", nameof(name));
+        }
+
         if (trimmed.Length > NameMaxLength)
+        {
             throw new ArgumentException($"Project name must be at most {NameMaxLength} characters.", nameof(name));
+        }
 
         return new Project(Guid.CreateVersion7(), trimmed);
     }

@@ -22,7 +22,9 @@ public sealed class CreateProjectHandler(IDbContextFactory<AppDbContext> dbFacto
 
         await using var db = await dbFactory.CreateDbContextAsync(ct);
         if (await db.Projects.AnyAsync(p => p.Name == project.Name, ct))
+        {
             return new(null, $"A project named '{project.Name}' already exists.");
+        }
 
         db.Projects.Add(project);
         await db.SaveChangesAsync(ct);

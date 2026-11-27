@@ -23,10 +23,14 @@ public sealed class ProjectSteps(IPage page)
     }
 
     [Then("the project list contains {string}")]
-    public Task ProjectListContains(string name) =>
-        Expect(page.GetByRole(AriaRole.Listitem).Filter(new() { HasText = name })).ToBeVisibleAsync();
+    public Task ProjectListContains(string name)
+    {
+        return Expect(page.GetByRole(AriaRole.Listitem).Filter(new() { HasText = name })).ToBeVisibleAsync();
+    }
 
     [Then("I see the error {string}")]
-    public Task SeeError(string message) =>
-        Expect(page.GetByText(message)).ToBeVisibleAsync();
+    public Task SeeError(string message)
+    {
+        return Expect(page.GetByText(message)).ToBeVisibleAsync();
+    }
 }

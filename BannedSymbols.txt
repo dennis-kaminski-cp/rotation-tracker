@@ -1,0 +1,6 @@
+P:System.DateTime.Now;Use TimeProvider (inject it) so time is testable
+P:System.DateTime.UtcNow;Use TimeProvider (inject it) so time is testable
+P:System.DateTime.Today;Use TimeProvider (inject it) so time is testable
+P:System.DateTimeOffset.Now;Use TimeProvider (inject it) so time is testable
+P:System.DateTimeOffset.UtcNow;Use TimeProvider (inject it) so time is testable
+T:System.Console;Use ILogger

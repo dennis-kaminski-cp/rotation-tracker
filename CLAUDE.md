@@ -20,12 +20,15 @@ The app tracks rotation **metadata** only: policy, schedule, owner, and the loca
 dotnet build
 dotnet test                                      # unit + E2E (E2E starts its own Postgres container)
 dotnet test tests/RotationTracker.Tests          # unit only, no Docker needed
+dotnet format                                    # fix formatting and style; CI runs it with --verify-no-changes
 docker compose up -d --build                     # app on http://localhost:8080, health at /healthz
 docker compose up -d db && dotnet run --project src/RotationTracker   # app on host, db in Docker
 dotnet ef migrations add <Name> -p src/RotationTracker -o Infrastructure/Migrations
 ```
 
 Migrations run on app startup.
+
+Lint: `.editorconfig` holds the style rules, `Directory.Build.props` makes every warning a build error (analyzers at `latest-recommended`, code style enforced in the build). Fix the code, don't suppress: a rule that's wrong for this repo gets changed in `.editorconfig`, with the owner's OK. `BannedSymbols.txt` bans APIs (current time: inject `TimeProvider`). `tests/RotationTracker.Tests/ArchitectureTests.cs` checks the structure rules below, the hard rule (no property named like a credential value), sealed classes, and that `.razor` files have no `@code`: component logic goes in a `.razor.cs` code-behind, because analyzers and `dotnet format` skip `@code`.
 
 ## Structure: DDD + vertical slices
 

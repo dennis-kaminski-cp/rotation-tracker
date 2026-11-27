@@ -27,7 +27,9 @@ public sealed class TestRun
     public static async Task StartAsync()
     {
         if (Microsoft.Playwright.Program.Main(["install", "chromium"]) != 0)
+        {
             throw new InvalidOperationException("Playwright browser install failed.");
+        }
 
         database = new PostgreSqlBuilder("postgres:18").Build();
         await database.StartAsync();
@@ -50,7 +52,7 @@ public sealed class TestRun
     }
 
     [BeforeScenario]
-    public async Task StartScenarioAsync(IObjectContainer container)
+    public static async Task StartScenarioAsync(IObjectContainer container)
     {
         await ResetDatabaseAsync();
         var context = await browser.NewContextAsync(new() { BaseURL = app.ClientOptions.BaseAddress.ToString() });
@@ -59,7 +61,10 @@ public sealed class TestRun
     }
 
     [AfterScenario]
-    public Task StopScenarioAsync(IBrowserContext context) => context.CloseAsync();
+    public static Task StopScenarioAsync(IBrowserContext context)
+    {
+        return context.CloseAsync();
+    }
 
     private static async Task ResetDatabaseAsync()
     {
