@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using RotationTracker.Domain;
 using RotationTracker.Infrastructure;
 
@@ -20,14 +21,29 @@ public sealed class CreateProjectHandler(IDbContextFactory<AppDbContext> dbFacto
             return new(null, ex.Message);
         }
 
+        var duplicate = new CreateProjectResult(null, $"A project named '{project.Name}' already exists.");
         await using var db = await dbFactory.CreateDbContextAsync(ct);
         if (await db.Projects.AnyAsync(p => p.Name == project.Name, ct))
         {
-            return new(null, $"A project named '{project.Name}' already exists.");
+            return duplicate;
         }
 
         db.Projects.Add(project);
-        await db.SaveChangesAsync(ct);
+        try
+        {
+            await db.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+        {
+            return duplicate;
+        }
+
         return new(project.Id, null);
+    }
+
+    // The check above misses a concurrent create of the same name; the unique index catches it.
+    private static bool IsUniqueViolation(DbUpdateException ex)
+    {
+        return ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation };
     }
 }
