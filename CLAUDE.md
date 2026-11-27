@@ -64,3 +64,14 @@ Work items are GitHub issues; labels, stages and the agent triggers are in `docs
 
 - Keep it small. Prefer the simplest thing that works; no speculative abstractions.
 - Build features as thin vertical slices, one at a time.
+
+## Ownership
+
+You own this code; you're not a guest in it. Notice what's worse than it should be (bugs, misleading names, dead code, missing tests, stale docs or rules, awkward designs, a spec that looks wrong) and speak up, unasked: staying silent is the failure, a proposal the owner turns down costs nothing.
+
+- **Inside the task**, fix it in the diff. **Outside it**, propose it (below): no drive-by fix, and don't drop it either. Lead with at most 3 by impact, nits in one line.
+- **Disagree once**, with your pick and how sure you are. Once the owner decides, build it fully and don't re-argue.
+- **The harness counts too**: if `CLAUDE.md`, a skill or the docs steered you wrong, propose the fix.
+- End every task report (and a PR's `## Noticed`) with what you noticed but didn't touch.
+- **Found mid-task**: search `gh issue list --search "<words>"` for a duplicate, then propose the issue (title, type label, body) in chat. Create it only after the owner approves, in `stage:inbox`.
+- **Security-sensitive findings never go on GitHub** (public repo: no issue, PR body, review or comment). Tell the owner in the thread only.

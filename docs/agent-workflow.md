@@ -17,7 +17,7 @@ Each stage is either **waiting** or **in progress**. The thread moves an issue o
 ```
 waiting:      inbox            refined            ready                     review
                 │                 │                  │                         │ human merge
-in progress:  refining ─approve─▶ designing ─approve─▶ building ── draft PR ──▶ └▶ closed
+in progress:  refining ─approve─▶ designing ─approve─▶ building ──── PR ────▶ └▶ closed
                  └──── approve, skip design ────────▶
 ```
 
@@ -27,12 +27,12 @@ in progress:  refining ─approve─▶ designing ─approve─▶ building ─�
 |---|---|---|---|---|
 | refining | `refine-issue` | the request, repo | issue body: Goal, Scope, Scenarios, Domain terms, Decisions, Notes; sub-issue stubs | `refined`, or `ready` when design is skipped |
 | designing | `design-issue` | the spec, repo | issue body: `## Design` | `ready` |
-| building | `build-issue` | spec + design | branch, code, draft PR (`Closes #n`) | `review` |
+| building | `build-issue` | spec + design | branch, code, PR (`Closes #n`; draft until reviewed) | `review` |
 | parent | `orchestrate-issue` | sub-issues, their stages | refines and designs each sub-issue in its thread, starts builds as worktree threads | closed when all sub-issues are |
 
 - **Refine** settles *what*: scope, behaviour, scenarios. A conversation with the owner; big items become a parent with stub sub-issues. Refine recommends design or skip: design when the domain model changes or a page is added or reshaped; small fixes skip it.
 - **Design** settles *how*: domain model, data, slices, UI, tests. A conversation with the owner.
-- **Build** implements the approved spec and design; a deviation is stated in the PR. It moves the thread into a fresh worktree from `origin/main` first. Inner review loop (max 2 rounds, until no HIGH findings and `dotnet test` is green).
+- **Build** implements the approved spec and design; a deviation is stated in the PR. It moves the thread into a fresh worktree from `origin/main` first. Early draft PR; a fresh-context review, max 2 rounds: only CRITICAL/HIGH findings start another round, LOWs are fixed only when trivial and in touched code, otherwise reported in the thread. Ready PR when done.
 - **Parent issues**: approving a split puts the parent in `ready`; `orchestrate-issue` then takes the sub-issues one by one in build order: refine and design happen in the parent's thread (just in time, since what the earlier ones become changes the later ones), builds start as separate worktree threads so they can run in parallel.
 - **Review**: human checks with `/preview` and merges (squash, CI green). Review comments on the PR: add `agent` to the issue (or ask in the thread); `build-issue` works them on the same branch.
 
