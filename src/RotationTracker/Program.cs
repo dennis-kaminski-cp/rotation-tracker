@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RotationTracker.Components;
 using RotationTracker.Features.Projects;
+using RotationTracker.Features.Services;
 using RotationTracker.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
 builder.Services.AddHealthChecks();
 
 builder.Services.AddScoped<CreateProjectHandler>();
+builder.Services.AddScoped<CreateServiceHandler>();
 
 var app = builder.Build();
 

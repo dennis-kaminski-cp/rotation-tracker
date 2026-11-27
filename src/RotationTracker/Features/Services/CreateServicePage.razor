@@ -1,0 +1,80 @@
+@page "/projects/{ProjectId:guid}/services/new"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.EntityFrameworkCore
+@using RotationTracker.Infrastructure
+@inject IDbContextFactory<AppDbContext> DbFactory
+@inject CreateServiceHandler Handler
+@inject NavigationManager Navigation
+
+<PageTitle>New service</PageTitle>
+
+@if (!loaded)
+{
+    <p>Loading…</p>
+}
+else if (projectName is null)
+{
+    <p role="alert">Project not found.</p>
+    <a href="projects">Back to projects</a>
+}
+else
+{
+    <h1>New service in @projectName</h1>
+
+    <EditForm Model="form" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+        <label>
+            Name
+            <InputText @bind-Value="form.Name" />
+        </label>
+        <ValidationMessage For="() => form.Name" />
+        <label>
+            Description
+            <InputTextArea @bind-Value="form.Description" />
+        </label>
+        <ValidationMessage For="() => form.Description" />
+        @if (error is not null)
+        {
+            <p role="alert">@error</p>
+        }
+        <button type="submit">Create</button>
+        <a href="projects">Cancel</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public Guid ProjectId { get; set; }
+
+    private readonly FormModel form = new();
+    private bool loaded;
+    private string? projectName;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        projectName = await db.Projects.Where(p => p.Id == ProjectId).Select(p => p.Name).SingleOrDefaultAsync();
+        loaded = true;
+    }
+
+    private async Task Submit()
+    {
+        var result = await Handler.Handle(ProjectId, form.Name, form.Description);
+        if (result.Error is not null)
+        {
+            error = result.Error;
+            return;
+        }
+        Navigation.NavigateTo("projects");
+    }
+
+    private sealed class FormModel
+    {
+        [Required, StringLength(RotationTracker.Domain.Service.NameMaxLength)]
+        public string Name { get; set; } = "";
+
+        [StringLength(RotationTracker.Domain.Service.DescriptionMaxLength)]
+        public string? Description { get; set; }
+    }
+}

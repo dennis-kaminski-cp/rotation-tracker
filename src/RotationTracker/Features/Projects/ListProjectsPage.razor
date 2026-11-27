@@ -19,20 +19,42 @@ else if (projects.Count == 0)
 }
 else
 {
-    <ul>
-        @foreach (var name in projects)
-        {
-            <li>@name</li>
-        }
-    </ul>
+    @foreach (var project in projects)
+    {
+        var headingId = $"project-{project.Id}";
+        var projectServices = services![project.Id].ToList();
+        <section aria-labelledby="@headingId">
+            <h2 id="@headingId">@project.Name</h2>
+            <a href="projects/@project.Id/services/new">Add service</a>
+            @if (projectServices.Count == 0)
+            {
+                <p>No services yet.</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var service in projectServices)
+                    {
+                        <li>@service.Name@(service.Description is null ? "" : $" — {service.Description}")</li>
+                    }
+                </ul>
+            }
+        </section>
+    }
 }
 
 @code {
-    private List<string>? projects;
+    private List<ProjectRow>? projects;
+    private ILookup<Guid, ServiceRow>? services;
 
     protected override async Task OnInitializedAsync()
     {
         await using var db = await DbFactory.CreateDbContextAsync();
-        projects = await db.Projects.OrderBy(p => p.Name).Select(p => p.Name).ToListAsync();
+        projects = await db.Projects.OrderBy(p => p.Name).Select(p => new ProjectRow(p.Id, p.Name)).ToListAsync();
+        var serviceRows = await db.Services.OrderBy(s => s.Name).Select(s => new ServiceRow(s.ProjectId, s.Name, s.Description)).ToListAsync();
+        services = serviceRows.ToLookup(s => s.ProjectId);
     }
+
+    private sealed record ProjectRow(Guid Id, string Name);
+    private sealed record ServiceRow(Guid ProjectId, string Name, string? Description);
 }

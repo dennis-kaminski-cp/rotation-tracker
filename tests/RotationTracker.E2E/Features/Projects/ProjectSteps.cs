@@ -24,7 +24,7 @@ public sealed class ProjectSteps(IPage page)
 
     [Then("the project list contains {string}")]
     public Task ProjectListContains(string name) =>
-        Expect(page.GetByRole(AriaRole.Listitem).Filter(new() { HasText = name })).ToBeVisibleAsync();
+        Expect(page.GetByRole(AriaRole.Heading, new() { Name = name, Exact = true })).ToBeVisibleAsync();
 
     [Then("I see the error {string}")]
     public Task SeeError(string message) =>
