@@ -13,7 +13,7 @@ Read `docs/agent-workflow.md` first: its **Rules for agent runs** apply througho
 gh issue view N --json number,title,state,author,labels,subIssues
 ```
 
-Run the entry check, remove the `agent` label if present, and name the thread `#N <title>` (see the rules).
+Run the entry check, remove the `agent` label if present, and link the thread to the issue (see the rules); each stage skill sets the thread title.
 
 Route by stage label:
 

@@ -17,7 +17,7 @@ The issue is the only output. Read the repo, write only to GitHub. The working t
 gh issue view N --json number,title,body,state,author,labels,comments,parent
 ```
 
-Entry stages: waiting `stage:refined`, in progress `stage:designing`. Run the entry check and claim to `stage:designing`.
+Entry stages: waiting `stage:refined`, in progress `stage:designing`. Run the entry check, claim to `stage:designing`, title the thread `[design]: #N <title>`.
 
 The spec (Goal, Scope, Scenarios, Decisions) is the input. Missing or contradicting itself: ask **refine here first** (run `refine-issue`, then come back) / **design anyway**.
 

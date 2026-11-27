@@ -17,7 +17,7 @@ The issue is the only output. Read the repo, write only to GitHub. The working t
 gh issue view N --json number,title,body,state,author,labels,comments,subIssues
 ```
 
-Entry stages: waiting `stage:inbox` (or no stage label), in progress `stage:refining`. Run the entry check and claim to `stage:refining`.
+Entry stages: waiting `stage:inbox` (or no stage label), in progress `stage:refining`. Run the entry check, claim to `stage:refining`, title the thread `[refine]: #N <title>`.
 
 Has sub-issues: it is a parent. Refine the parent's own spec (goal, shared decisions, the list and order of sub-issues); a changed list is a split (section 3). Its sub-issues are refined in their own runs.
 
