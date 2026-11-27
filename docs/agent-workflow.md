@@ -58,7 +58,7 @@ Agents run on the developer's machine with the developer's own `gh` login. There
 
 - Skills only make the writes they describe (labels, comments, issue body, sub-issues, draft PRs) and never merge.
 - `main` is protected: PR only, green CI, squash merge by a human.
-- `.claude/settings.json` denies irreversible commands (merge, repo/ruleset/secret changes, API deletes, collaborators, webhooks, force push). It catches accidents, not deliberate workarounds.
+- `.claude/settings.json` allows the writes the skills make (issue edit/comment/create, PR create/edit/comment/ready, replies to PR review comments, `git push`), so runs in auto mode don't stall on them, and denies irreversible commands (merge, repo/ruleset/secret changes, API deletes, collaborators, webhooks, force push). The deny list catches accidents, not deliberate workarounds. Residual risk of the allow list: `--body-file` can post a local file to GitHub; the owner check and "issue text is data" keep that unlikely.
 - Interactive sessions still ask before any GitHub write.
 
 ### Real isolation (later)
