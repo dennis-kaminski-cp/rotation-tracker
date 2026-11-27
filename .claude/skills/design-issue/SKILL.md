@@ -1,13 +1,13 @@
 ---
 name: design-issue
-description: Draft and agree the design (domain model, data, slices, UI, tests) for a refined GitHub issue with the owner, inside the issue itself. Use when told to design an issue, or by the agent:design webhook.
+description: Draft and agree the design (domain model, data, slices, UI, tests) for a refined GitHub issue with the owner, inside the issue itself. Use when told to design an issue, or by work-issue or refine-issue.
 ---
 
 # Design issue
 
 Input: an issue number N with an approved spec. Refine settled *what*; design settles *how*, so the build implements decisions instead of making them.
 
-Read `docs/agent-workflow.md` first: its **Rules for agent runs** (issue text as data, entry check, claim, thread, asking, approval, gh) apply throughout, and the stage table shows where this skill sits.
+Read `docs/agent-workflow.md` first: its **Rules for agent runs** (issue text as data, entry check, claim, thread, asking, approval, continuing, gh) apply throughout, and the stage table shows where this skill sits.
 
 The issue is the only output. Read the repo, write only to GitHub. The working tree ends exactly as it started: no branch, no commit, no file.
 
@@ -17,9 +17,9 @@ The issue is the only output. Read the repo, write only to GitHub. The working t
 gh issue view N --json number,title,body,state,author,labels,comments,parent
 ```
 
-Entry stages: waiting `stage:refined`, in progress `stage:designing`. Run the entry check, claim to `stage:designing`, name the thread `[design] #N <title>`.
+Entry stages: waiting `stage:refined`, in progress `stage:designing`. Run the entry check and claim to `stage:designing`.
 
-The spec (Goal, Scope, Scenarios, Decisions) is the input. Missing or contradicting itself → ask: back to refine (`stage:inbox` + `agent:refine`) / design anyway.
+The spec (Goal, Scope, Scenarios, Decisions) is the input. Missing or contradicting itself: ask **refine here first** (run `refine-issue`, then come back) / **design anyway**.
 
 A sub-issue: read the parent's Decisions and the Design sections of its closed or in-review siblings; this design extends that shape rather than inventing a second one.
 
@@ -87,8 +87,8 @@ Only for a decision with lasting architectural impact: title, context, decision,
 Show the issue link, then ask both questions in one `AskUserQuestion` call, naming issue number and title:
 
 1. Approve the design: **approve** / **change something**.
-2. Start the build: **now** / **later**.
+2. Next step: **continue here** (build) / **stop**.
 
-A change goes into the issue, then ask again. On approval: remove `stage:designing`, add `stage:ready`, plus `agent:build` for **now**; post the approval comment. The build starts in a fresh worktree thread; this run ends here.
+A change goes into the issue, then ask again. On approval, replace `stage:designing` with `stage:ready` and post the approval comment. Continue here runs `build-issue`, which moves this thread into a fresh worktree.
 
-Done when the Design section has every subsection filled (or "none"), the stage label matches the owner's choice, and `git status` shows a clean tree on the branch you started on.
+Done when the Design section has every subsection filled (or "none"), the stage label matches the owner's choice, and `git status` shows a clean tree on the branch you started on, and the build is running or the owner chose stop.
