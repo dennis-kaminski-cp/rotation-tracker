@@ -28,7 +28,7 @@ dotnet ef migrations add <Name> -p src/RotationTracker -o Infrastructure/Migrati
 
 Migrations run on app startup.
 
-Lint: `.editorconfig` holds the style rules, `Directory.Build.props` makes every warning a build error (analyzers at `latest-recommended`, code style enforced in the build). Fix the code, don't suppress: a rule that's wrong for this repo gets changed in `.editorconfig`, with the owner's OK.
+Lint: `.editorconfig` holds the style rules, `Directory.Build.props` makes every warning a build error (analyzers at `latest-recommended`, code style enforced in the build). Fix the code, don't suppress: a rule that's wrong for this repo gets changed in `.editorconfig`, with the owner's OK. `BannedSymbols.txt` bans APIs (current time: inject `TimeProvider`). `tests/RotationTracker.Tests/ArchitectureTests.cs` checks the structure rules below, the hard rule (no property named like a credential value), sealed classes, and that `.razor` files have no `@code`: component logic goes in a `.razor.cs` code-behind, because analyzers and `dotnet format` skip `@code`.
 
 ## Structure: DDD + vertical slices
 

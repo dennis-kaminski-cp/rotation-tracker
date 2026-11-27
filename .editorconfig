@@ -112,6 +112,7 @@ dotnet_diagnostic.IDE0049.severity = warning   # string, not String
 
 # Async
 dotnet_diagnostic.CA1849.severity = warning    # no sync-over-async
+dotnet_diagnostic.CA2016.severity = warning    # pass the CancellationToken on
 
 # readonly fields
 dotnet_style_readonly_field = true

@@ -36,4 +36,4 @@ app.MapRazorComponents<App>()
 
 await app.RunAsync();
 
-public partial class Program;
+public sealed partial class Program;
