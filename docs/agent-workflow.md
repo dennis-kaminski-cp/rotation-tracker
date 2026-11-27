@@ -35,7 +35,7 @@ in progress:  refining ─approve─▶ designing ─approve─▶ building ─�
 - **Build** implements the approved spec and design; a deviation is stated in the PR. It moves the thread into a fresh worktree from `origin/main` first. Early draft PR; a fresh-context review, max 2 rounds: only CRITICAL/HIGH findings start another round, LOWs are fixed only when trivial and in touched code, otherwise reported in the thread. Ready PR when done.
 - **Parent issues**: approving a split puts the parent in `ready`; `orchestrate-issue` then takes the sub-issues one by one in build order: refine and design happen in the parent's thread (just in time, since what the earlier ones become changes the later ones), builds start as separate worktree threads so they can run in parallel.
 - **Review**: human checks with `/preview` and merges (squash, CI green). Review comments on the PR: add `agent` to the issue (or ask in the build thread); the new run hands them to the open build thread, which works them on the same branch.
-- **Closed without merge**: the issue keeps its stage; the next run of `build-issue` sees the closed PR and offers a rebuild from `origin/main`.
+- **Closed without merge**: close the PR and delete its branch. Agents ignore closed PRs, so the issue's next build starts fresh from `origin/main`.
 
 Refine and design make **no code changes**: no branch, no files, everything goes into the issue.
 

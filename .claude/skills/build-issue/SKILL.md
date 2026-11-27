@@ -15,23 +15,21 @@ Read `docs/agent-workflow.md` first: its **Rules for agent runs** apply througho
 
 ```sh
 gh issue view N --json number,title,body,state,author,labels,comments,subIssues,parent,blockedBy,closedByPullRequestsReferences
-gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.head.ref | test("^[a-z]+/N-")) | {number, state, merged: (.merged_at != null), draft, headRefName: .head.ref, url: .html_url}'
+gh pr list --state open --json number,headRefName,isDraft,url --jq '[.[] | select(.headRefName | test("^[a-z]+/N-"))]'
 ```
 
-N's PRs are those on a `<type>/N-…` branch (section 2) plus `closedByPullRequestsReferences`. Never search PR bodies for N (that matches every PR that mentions the number), and don't use `head:` search or a `--limit`: search misses PRs whose branch was deleted, and a limit misses old ones.
+N's PRs are its open PRs on a `<type>/N-…` branch (section 2) plus `closedByPullRequestsReferences`. A PR closed unmerged is an abandoned build: ignore it. Never search PR bodies for N: that matches every PR that mentions the number.
 
 Entry stages: waiting `stage:ready` (no sub-issues; a parent goes to `orchestrate-issue`), in progress `stage:building`, waiting `stage:review`. Run the entry check. A sub-issue: read the parent too; its Decisions are part of the spec.
 
 Ask (**go on** / **stop**, naming what holds) when:
 
 - an issue it is blocked by is still open;
-- a PR for N is already merged;
+- a PR in `closedByPullRequestsReferences` is already merged;
 - it is a sub-issue, a sibling before it in the parent's order is still open, and no parent thread started you;
 - two or more other issues are already in `stage:building` (`gh issue list --label stage:building --json number`).
 
-**Resume** when an open PR for N exists: its branch is the build. Any PR on another branch than the one you would resume: show it and ask.
-
-**Closed PR**: N's PRs are all closed unmerged (an abandoned build): name them and ask **rebuild from `origin/main`** / **stop**. A rebuild is a new build; its branch gets a `-2` suffix if the old name still exists on origin.
+**Resume** when an open PR for N exists: its branch is the build. Any PR on another branch than the one you would resume: show it and ask. No open PR: a new build, whatever the stage.
 
 Claim to `stage:building` (a resume of a PR in review too), title the thread `[build]: #N <title>`.
 

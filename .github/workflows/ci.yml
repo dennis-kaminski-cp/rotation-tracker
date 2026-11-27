@@ -27,3 +27,5 @@ jobs:
           docker compose up -d --build --wait
           curl -fsS --retry 30 --retry-delay 1 --retry-all-errors http://localhost:8080/healthz
           curl -fsS -o /dev/null http://localhost:8080/_framework/blazor.web.js
+      - if: failure()
+        run: docker compose logs

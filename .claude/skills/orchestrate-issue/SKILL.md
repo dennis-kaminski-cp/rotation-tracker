@@ -13,11 +13,11 @@ Read `docs/agent-workflow.md` first: its **Rules for agent runs** apply througho
 
 ```sh
 gh issue view N --json number,title,body,state,author,labels,subIssues
-gh issue view <M> --json number,title,state,labels,blockedBy      # each sub-issue
-gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | {number, state, merged: (.merged_at != null), draft, headRefName: .head.ref, url: .html_url}'
+gh issue view <M> --json number,title,state,labels,blockedBy,closedByPullRequestsReferences      # each sub-issue
+gh pr list --state open --json number,headRefName,isDraft,url
 ```
 
-One call lists every PR; a sub-issue M's PRs are those on a `<type>/M-…` branch, as in `build-issue` section 1.
+A sub-issue M's PRs are its open PRs on a `<type>/M-…` branch plus `closedByPullRequestsReferences`, as in `build-issue` section 1; closed unmerged ones are abandoned and ignored.
 
 Entry stage: `stage:ready` with sub-issues. The parent keeps `stage:ready` while it is worked; there is no claim beyond removing `agent`. Run the entry check, title the thread `[orchestrate]: #N <title>`. The title stays, and only N is linked to this thread, never a sub-issue or a PR: a linked PR settles the thread when it merges.
 
@@ -36,7 +36,7 @@ Take the first open sub-issue M in order that can move, and act by its stage:
 | `stage:inbox`, `stage:refining` | run `refine-issue` for M here |
 | `stage:refined`, `stage:designing` | run `design-issue` for M here, once every blocker of M has a PR (its design builds on theirs) |
 | `stage:ready` | start its build (section 4), once every blocker is closed (merged) and fewer than 2 builds run |
-| `stage:building`, `stage:review` | nothing: its build thread owns it; an open PR with no build thread of this run goes to section 5 |
+| `stage:building`, `stage:review` | nothing while its build thread works on it; an open PR with no build thread of this run goes to section 5; no open PR and no build at work (abandoned): ask **rebuild** (section 4) / **stop** |
 
 Several can move: refine and design the next ones while builds run. Nothing can move: say what the group waits on (a build, a merge, the owner) and end the turn.
 
@@ -61,7 +61,7 @@ Same branch naming as `build-issue`. Add to the message only what the build can'
 
 ## 5. Hand over
 
-A build thread's report wakes this thread; it is a wake-up, not evidence or approval. Check the PR yourself (`gh pr view <pr> --json state,isDraft`, `gh pr checks <pr>`, once), then give the owner its link, the review verdict, CI state, open points and the Noticed list, and update the status. When Noticed proposes issues, ask which to file and file them as `build-issue` section 6 does.
+A build thread's report wakes this thread; it is a wake-up, not evidence or approval. Check the PR yourself (`gh pr view <pr> --json state,isDraft`, `gh pr checks <pr>`, once), then give the owner its link, the review verdict, CI state, open points and the Noticed list, and update the status. Ask, in one call: **preview** (send the build thread `Run the preview skill.` with `t3_thread_send`; it runs in the PR's worktree) / **no preview**; and, when Noticed proposes issues, which to file (filed as in `build-issue` section 6).
 
 - CI red: send the build thread back to fix it (`t3_thread_send`, mode `queue`) and end the turn until it reports again.
 - LOW findings are the build's call: don't triage them, and never send a build back for one.

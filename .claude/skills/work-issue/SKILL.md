@@ -10,15 +10,17 @@ Input: an issue number N. The single entry point to the issue workflow: it reads
 Read `docs/agent-workflow.md` first: its **Rules for agent runs** apply throughout.
 
 ```sh
-gh issue view N --json number,title,state,author,labels,subIssues
+gh issue view N --json number,title,state,author,labels,subIssues,parent
 ```
 
-Run the entry check, remove the `agent` label if present, and link the thread to the issue (see the rules); each stage skill sets the thread title.
+Run the entry check and remove the `agent` label if present (see the rules).
 
-Another thread on N: T3 `t3_thread_list` with `titleContains: "#N "` (trailing space) and `settled: false`.
+Other threads on N: T3 `t3_thread_list` with `titleContains: "#N "` (trailing space) and `settled: false`; for a sub-issue also `"#P "` for its parent P (an orchestrate thread may be working on N). Leave this thread out.
 
-- A `[build]` thread: it owns N's worktree and branch, so a second build here would collide. Send it the work (`t3_thread_send`, mode `queue`): `Continue the build-issue skill for issue #N; the owner asked again, so work any new review comments.` Tell the owner its link and stop.
-- Any other one besides this one: name it (its link) and ask **go on here** / **stop**.
+- A `[build]` thread while N has an open PR (`gh pr list --state open`, branch `<type>/N-…`): it owns that branch and worktree, so a second build here would collide. Send it the work (`t3_thread_send`, mode `queue`): `Continue the build-issue skill for issue #N; the owner asked again, so work any new review comments.` Tell the owner its link and stop, without linking this thread.
+- Any other: name it (its link) and ask **go on here** / **stop**. A build thread without an open PR is abandoned; the owner can settle it.
+
+Going on: link this thread to the issue (see the rules); each stage skill sets the thread title.
 
 Route by stage label:
 
